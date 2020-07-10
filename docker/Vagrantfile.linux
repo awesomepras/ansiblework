@@ -20,10 +20,6 @@ Vagrant.configure("2") do |config|
         d.create_args = ['--rm=true']         # Avoid leaving unused containers behind.
       end
   end
-  config.trigger.after :up do |trigger|
-    trigger.info = "More information"
-    trigger.run = {inline: "bash -c 'echo \"hey there!!\" > file.txt'"}
-  end
 
 #Guest 2
   config.vm.define "slave" do |slave|
