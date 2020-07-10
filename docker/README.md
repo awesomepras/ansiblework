@@ -12,4 +12,4 @@ when trying to bring up the vagrant docker container, ssh was failing to authent
 overwrite the content to use the users's privatekey 
 
 ### Identify vagrant ssh configuration 
-# vagrant ssh-config 
+- $ vagrant ssh-config 
