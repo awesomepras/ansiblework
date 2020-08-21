@@ -1,8 +1,10 @@
 Vagrant.configure("2") do |config|
-  config.ssh.private_key_path = [ '~/.vagrant.d/insecure_private_key','~/.ssh/id_rsa' ] 
+#global configuration for all vms
+  config.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key", "~/.ssh/id_rsa"] 
   config.ssh.forward_agent = true
   config.ssh.insert_key = false
-
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+#specific configuration for centos 
   config.vm.define "centos8" do |vm1|
     vm1.vm.box = "centos/8"
     vm1.vm.box_url = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-Vagrant-8.1.1911-20200113.3.x86_64.vagrant-virtualbox.box"
@@ -34,46 +36,38 @@ Vagrant.configure("2") do |config|
     vm1.vbguest.installer = Foo
     vm1.vm.box_version = "1905.1"
     vm1.vm.box_check_update = false
-    vm1.vm.network :public_network, type: "dhcp", bridge: "wlp2s0", ip: "192.168.0.130"
+    vm1.vm.network :public_network, bridge: "wlp2s0", ip: "192.168.0.130"
     vm1.vm.network "forwarded_port", guest: 22, host: 20022, id: "ssh"
-    vm1.vm.define "centos8" 
+    # change default vagrantbox name to guestname
+    vm1.vm.hostname = "centos8"
+    vm1.vm.provision "shell", inline: <<-SHELL
+      sudo yum -y install wget
+    SHELL
     vm1.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
-       vb.gui = false
+      vb.gui = false
       vb.memory = "2048"
       vb.cpus = 2
       vb.name = "centos"
-    end
-  #change default vagrantbox name to guestname
-    vm1.vm.define "centos8" do |co|
-      co.vm.hostname = "centos8"
-      co.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
-      co.vm.provision "shell", inline: <<-SHELL
-        sudo yum -y install wget
-      SHELL
     end
   end
   config.vm.define "ubuntu18" do |vm2| 
     vm2.vm.box = "hashicorp/bionic64"
     vm2.vm.box_version = "1.0.282"
     vm2.vm.box_check_update = false
-    vm2.vm.network :public_network, type: "dhcp", bridge: "wlp2s0", ip: "192.168.0.131"
+    vm2.vm.network :public_network, bridge: "wlp2s0", ip: "192.168.0.131"
     vm2.vm.network "forwarded_port", guest: 22, host: 20023, id: "ssh"
     vm2.vm.define "ubuntu18"
+    vm2.vm.hostname = "ubuntu18"
+    vm2.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get -y install net-tools wget
+    SHELL
     vm2.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
       vb.gui = false
       vb.memory = "2048"
       vb.cpus = 2
       vb.name = "ubuntu18"
-    end
-    #change default vagrantbox name to guestname
-    vm2.vm.define "ubuntu18" do |ub|
-      ub.vm.hostname = "ubuntu18"
-      ub.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
-      ub.vm.provision "shell", inline: <<-SHELL
-        sudo apt-get -y install net-tools wget
-      SHELL
     end
   end
 end
