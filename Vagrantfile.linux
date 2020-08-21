@@ -1,0 +1,55 @@
+Vagrant.configure("2") do |config|
+  config.ssh.private_key_path = [ '~/.vagrant.d/insecure_private_key','~/.ssh/id_rsa' ] 
+  config.ssh.forward_agent = true
+  config.ssh.insert_key = false
+  config.vm.box = "centos/8"
+  config.vm.box_version = "1905.1"
+  config.vm.box_check_update = false
+  config.vm.network :public_network, type: "dhcp", bridge: "wlp2s0", ip: "192.168.0.130"
+  config.vm.network "forwarded_port", guest: 22, host: 20022, id: "ssh"
+  config.vm.define "centos8" 
+  config.vm.provider "virtualbox" do |vb|
+  # Display the VirtualBox GUI when booting the machine
+     vb.gui = false
+     vb.memory = "2048"
+     vb.cpus = 2
+     vb.name = "centos"
+  end
+#change default vagrantbox name to guestname
+  config.vm.define "centos8" do |co|
+   co.vm.hostname = "centos8"
+   co.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+   co.vm.provision "shell", inline: <<-SHELL
+     sudo yum -y install wget
+   SHELL
+  end
+end
+
+
+
+Vagrant.configure("2") do |config|
+  config.ssh.private_key_path = [ '~/.vagrant.d/insecure_private_key','~/.ssh/id_rsa' ]
+  config.ssh.forward_agent = true
+  config.ssh.insert_key = false
+  config.vm.box = "hashicorp/bionic64"
+  config.vm.box_version = "1.0.282"
+  config.vm.box_check_update = false
+  config.vm.network :public_network, type: "dhcp", bridge: "wlp2s0", ip: "192.168.0.131"
+  config.vm.network "forwarded_port", guest: 22, host: 20023, id: "ssh"
+  config.vm.define "ubuntu18"
+  config.vm.provider "virtualbox" do |vb|
+  # Display the VirtualBox GUI when booting the machine
+     vb.gui = false
+     vb.memory = "2048"
+     vb.cpus = 2
+     vb.name = "ubuntu18"
+  end
+#change default vagrantbox name to guestname
+  config.vm.define "ubuntu18" do |ub|
+   ub.vm.hostname = "ubuntu18"
+   ub.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+   ub.vm.provision "shell", inline: <<-SHELL
+     sudo apt-get -y install net-tools wget
+   SHELL
+  end
+end

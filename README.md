@@ -11,7 +11,7 @@ Open a terminal/command prompt and install Vagrant Plugins (NOTE: you may need t
 * vagrant plugin install vagrant-vbguest \#The vbguest plugin manages VirtualBox Guest Additions (a set of device drivers and system applications which are installed in the guest operating system).  
 
 * vagrant plugin install vagrant-hostmanager\# The host manager plugin will allow our VM's to communicate with each other and host machine by name.
-
+* Vagrantfile.linux uses network interface wlnps0 which is found in ubuntu, edit the file and separate the distro before doing vagrant up
 Troubleshooting:
 For some reason the insecure key got corrupted remove it from ~/.vagrant.d/insecure_private_key and when vagrant up command is issued a new key will be re-generated
 https://github.com/roots/trellis/issues/46 \#
