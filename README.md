@@ -20,3 +20,7 @@ https://github.com/roots/trellis/issues/46 \#
 
 Debug Vagrant log:
 vagrant up --debug &> vagrant.log
+
+*MacOs 
+In macos after virtualbox guest is running ssh command to the public IP will result in connection refused error. In that case, use ssh options as below
+``` -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o IdentitiesOnly=yes
